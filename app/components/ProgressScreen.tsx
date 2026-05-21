@@ -1,11 +1,12 @@
 "use client";
-import { USER } from "../store";
+import { type AthleteData } from "@/lib/useAthlete";
 
 interface Props {
+  athlete: AthleteData;
   onNavigate: (s: string) => void;
 }
 
-export default function ProgressScreen({ onNavigate }: Props) {
+export default function ProgressScreen({ athlete, onNavigate }: Props) {
   const weeklyTSS = [180, 220, 200, 260, 290, 240, 310, 362];
   const weekLabels = ["W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11"];
   const maxTSS = Math.max(...weeklyTSS);
@@ -22,7 +23,7 @@ export default function ProgressScreen({ onNavigate }: Props) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
             <div className="metric-label">Form · TSB</div>
-            <div style={{ fontSize: 52, fontWeight: 800, color: "var(--yellow)", lineHeight: 1 }}>{USER.tsb}</div>
+            <div style={{ fontSize: 52, fontWeight: 800, color: "var(--yellow)", lineHeight: 1 }}>{athlete.tsb}</div>
             <div style={{ fontSize: 13, color: "#888", marginTop: 6, lineHeight: 1.5 }}>
               Loaded but recoverable.<br />Below −25 = risk zone.
             </div>
@@ -48,14 +49,14 @@ export default function ProgressScreen({ onNavigate }: Props) {
           <div>
             <div className="metric-label">Fitness · CTL</div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-              <span style={{ fontSize: 38, fontWeight: 800 }}>{USER.ctl}</span>
+              <span style={{ fontSize: 38, fontWeight: 800 }}>{athlete.ctl}</span>
               <span style={{ color: "var(--green)", fontSize: 14, fontWeight: 700 }}>+18</span>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div className="metric-label">Fatigue · ATL</div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, justifyContent: "flex-end" }}>
-              <span style={{ fontSize: 38, fontWeight: 800, color: "var(--red)" }}>{USER.atl}</span>
+              <span style={{ fontSize: 38, fontWeight: 800, color: "var(--red)" }}>{athlete.atl}</span>
               <span style={{ color: "var(--red)", fontSize: 14, fontWeight: 700 }}>+22</span>
             </div>
           </div>

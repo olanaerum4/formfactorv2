@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TodayScreen from "./components/TodayScreen";
 import PlanScreen from "./components/PlanScreen";
 import ProgressScreen from "./components/ProgressScreen";
@@ -11,18 +11,28 @@ import LogSessionScreen from "./components/LogSessionScreen";
 import LibraryScreen from "./components/LibraryScreen";
 import OnboardScreen from "./components/OnboardScreen";
 import BottomNav from "./components/BottomNav";
+import { useAthlete } from "@/lib/useAthlete";
 
 type Screen = "today" | "plan" | "progress" | "log" | "profile" | "coach" | "workout" | "logsession" | "library" | "onboard";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("today");
   const [proMode, setProMode] = useState(true);
+  const [checkedProfile, setCheckedProfile] = useState(false);
+  const athlete = useAthlete();
 
   const navigate = (s: string) => setScreen(s as Screen);
 
+  // Send new users to onboarding
+  useEffect(() => {
+    if (athlete.loaded && !checkedProfile) {
+      setCheckedProfile(true);
+      if (!athlete.hasProfile) setScreen("onboard");
+    }
+  }, [athlete.loaded, athlete.hasProfile, checkedProfile]);
+
   const PROGRESS = { today: 20, plan: 40, progress: 60, log: 80, profile: 100 };
   const progress = PROGRESS[screen as keyof typeof PROGRESS] || 20;
-
   const FULL_SCREENS = ["coach", "logsession"];
   const isFull = FULL_SCREENS.includes(screen);
 
@@ -32,7 +42,6 @@ export default function App() {
       display: "flex", justifyContent: "center", alignItems: "flex-start",
       padding: "20px 0"
     }}>
-      {/* Phone frame */}
       <div style={{
         width: 390, minHeight: 844, height: "calc(100vh - 40px)", maxHeight: 932,
         background: "#111", borderRadius: 44, border: "2px solid #1f1f1f",
@@ -68,16 +77,16 @@ export default function App() {
         <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
           {isFull ? (
             <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-              {screen === "coach" && <CoachScreen onNavigate={navigate} />}
+              {screen === "coach" && <CoachScreen athlete={athlete} onNavigate={navigate} />}
               {screen === "logsession" && <LogSessionScreen onNavigate={navigate} />}
             </div>
           ) : (
             <div style={{ height: "100%", paddingBottom: screen === "onboard" ? 0 : 72, overflow: "hidden auto" }}>
-              {screen === "today" && <TodayScreen proMode={proMode} onNavigate={navigate} />}
+              {screen === "today" && <TodayScreen athlete={athlete} proMode={proMode} onNavigate={navigate} />}
               {screen === "plan" && <PlanScreen onNavigate={navigate} />}
-              {screen === "progress" && <ProgressScreen onNavigate={navigate} />}
+              {screen === "progress" && <ProgressScreen athlete={athlete} onNavigate={navigate} />}
               {screen === "log" && <LogScreen onNavigate={navigate} />}
-              {screen === "profile" && <ProfileScreen proMode={proMode} setProMode={setProMode} onNavigate={navigate} />}
+              {screen === "profile" && <ProfileScreen athlete={athlete} proMode={proMode} setProMode={setProMode} onNavigate={navigate} />}
               {screen === "workout" && <WorkoutScreen onNavigate={navigate} />}
               {screen === "library" && <LibraryScreen onNavigate={navigate} />}
               {screen === "onboard" && <OnboardScreen onComplete={() => navigate("today")} />}
@@ -86,7 +95,7 @@ export default function App() {
         </div>
 
         {/* Bottom nav */}
-        <BottomNav active={screen} onNavigate={navigate} />
+        {screen !== "onboard" && <BottomNav active={screen} onNavigate={navigate} />}
       </div>
     </div>
   );

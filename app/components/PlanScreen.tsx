@@ -1,5 +1,5 @@
 "use client";
-import { WEEK_PLAN, ZONE_COLORS, USER } from "../store";
+import { WEEK_PLAN, ZONE_COLORS } from "../store";
 
 interface Props {
   onNavigate: (s: string) => void;
@@ -35,7 +35,7 @@ export default function PlanScreen({ onNavigate }: Props) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <div>
             <div className="metric-label">Week TSS</div>
-            <div style={{ fontSize: 30, fontWeight: 800 }}>{USER.weekTSS}</div>
+            <div style={{ fontSize: 30, fontWeight: 800 }}>362</div>
           </div>
           <div style={{ fontSize: 11, color: "var(--text-muted)", textAlign: "right", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.6 }}>
             80 → 362 RAMP<br />BUILD WEEK

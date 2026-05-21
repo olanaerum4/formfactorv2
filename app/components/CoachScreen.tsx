@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { USER } from "../store";
+import { type AthleteData } from "@/lib/useAthlete";
 
 interface Message {
   role: "user" | "assistant";
@@ -9,6 +9,7 @@ interface Message {
 }
 
 interface Props {
+  athlete: AthleteData;
   onNavigate: (s: string) => void;
 }
 
@@ -58,7 +59,7 @@ const INITIAL_MESSAGES: Message[] = [
   },
 ];
 
-export default function CoachScreen({ onNavigate }: Props) {
+export default function CoachScreen({ athlete, onNavigate }: Props) {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,11 +91,11 @@ export default function CoachScreen({ onNavigate }: Props) {
     const systemPrompt = `You are the FormFactor AI Coach — an embedded, data-driven running coach. Be direct, specific, and concise (max 3 sentences). Use exact numbers. Sound like a knowledgeable coach, not a chatbot.
 
 User context:
-- Name: ${USER.name}, Goal: "${USER.goal}"
-- VDOT: ${USER.vdot}, 5K PR: ${USER.pr5k}, Max HR: ${USER.maxHR}
+- Name: ${athlete.name}, Goal: "${athlete.goal}"
+- VDOT: ${athlete.vdot}, 5K PR: ${athlete.pr5k}, Max HR: ${athlete.maxHR}
 - Today: 5×800m @ 4:00/km (VO₂max intervals, TSS 78, Z4)
-- Fitness (CTL): ${USER.ctl}, Fatigue (ATL): ${USER.atl}, Form (TSB): ${USER.tsb}
-- Week 11/17 of 5K build plan, streak: ${USER.streak} weeks
+- Fitness (CTL): ${athlete.ctl}, Fatigue (ATL): ${athlete.atl}, Form (TSB): ${athlete.tsb}
+- Week 11/17 of 5K build plan, streak: ${athlete.streak} weeks
 - Zones: Z1 <5:30/km, Z2 5:00–5:30, Z3 4:30–4:50, Z4 4:15–4:30, Z5 3:55–4:10
 - HR zones: Z1 <140, Z2 140–152, Z3 152–163, Z4 163–170, Z5 170+
 

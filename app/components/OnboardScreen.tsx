@@ -14,19 +14,55 @@ const SUGGESTIONS = [
 
 export default function OnboardScreen({ onComplete }: Props) {
   const [step, setStep] = useState(0);
-  const [goal, setGoal] = useState("Sub-20 5K by Sept 14");
-  const [pr5k, setPr5k] = useState("21:14");
+  const [goal, setGoal] = useState("");
+  const [pr5k, setPr5k] = useState("");
   const [maxHR, setMaxHR] = useState("185");
   const [days, setDays] = useState(5);
+  const [saving, setSaving] = useState(false);
 
   const totalSteps = 5;
   const progress = ((step + 1) / totalSteps) * 100;
 
-  const next = () => {
-    if (step < totalSteps - 1) setStep(s => s + 1);
-    else onComplete();
+  const next = async () => {
+    if (step < totalSteps - 1) {
+      setStep(s => s + 1);
+    } else {
+      setSaving(true);
+      try {
+        const { saveAthlete } = await import("@/lib/athlete");
+        await saveAthlete({
+          goal,
+          pr_5k: pr5k,
+          max_hr: Number(maxHR) || 185,
+          training_days: days,
+          vdot: estimateVdot(pr5k),
+        });
+      } catch (e) {
+        console.error("Failed to save athlete:", e);
+      }
+      setSaving(false);
+      onComplete();
+    }
   };
   const back = () => setStep(s => s - 1);
+
+  function estimateVdot(pr: string): number {
+    // Convert "21:14" to VDOT approximation
+    const parts = pr.split(":");
+    if (parts.length !== 2) return 45;
+    const mins = Number(parts[0]) + Number(parts[1]) / 60;
+    // Rough VDOT from 5K time
+    if (mins < 16) return 62;
+    if (mins < 17) return 58;
+    if (mins < 18) return 54;
+    if (mins < 19) return 51;
+    if (mins < 20) return 48;
+    if (mins < 21) return 46;
+    if (mins < 22) return 44;
+    if (mins < 24) return 41;
+    if (mins < 26) return 38;
+    return 35;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -224,9 +260,10 @@ export default function OnboardScreen({ onComplete }: Props) {
         <button
           className="btn-yellow"
           onClick={next}
-          style={{ flex: step > 0 ? 2 : 1, margin: 0 }}
+          disabled={saving}
+          style={{ flex: step > 0 ? 2 : 1, margin: 0, opacity: saving ? 0.7 : 1 }}
         >
-          {step < totalSteps - 1 ? "Continue →" : "Build my plan →"}
+          {saving ? "Saving..." : step < totalSteps - 1 ? "Continue →" : "Build my plan →"}
         </button>
       </div>
     </div>

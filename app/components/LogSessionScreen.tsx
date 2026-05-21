@@ -22,8 +22,23 @@ export default function LogSessionScreen({ onNavigate }: Props) {
   const tss = Math.round(rpe * duration * 0.15);
   const rpeLabel = rpe <= 3 ? "easy, conversational" : rpe <= 5 ? "moderate, comfortable" : rpe <= 7 ? "hard, can speak in short sentences" : rpe <= 9 ? "hard, sustainable for the workout" : "maximal effort";
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaved(true);
+    try {
+      const { logSession } = await import("@/lib/athlete");
+      await logSession({
+        name: "VO₂max Intervals",
+        type: "Run",
+        duration_min: duration,
+        rpe,
+        feel,
+        tss,
+        notes,
+        date: new Date().toISOString().split("T")[0],
+      });
+    } catch (e) {
+      console.error("Failed to log session:", e);
+    }
     setTimeout(() => onNavigate("log"), 1200);
   };
 

@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { RECENT_LOG } from "../store";
 
 interface Props {
@@ -6,6 +7,30 @@ interface Props {
 }
 
 export default function LogScreen({ onNavigate }: Props) {
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    import("@/lib/athlete").then(({ getSessions }) => {
+      getSessions(20).then(data => {
+        setSessions(data);
+        setLoaded(true);
+      });
+    });
+  }, []);
+
+  const displayLog = loaded && sessions.length > 0
+    ? sessions.map(s => ({
+        date: new Date(s.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase(),
+        name: s.name,
+        time: `${s.duration_min} min`,
+        rpe: s.rpe,
+        feel: s.feel,
+        tss: s.tss,
+        notes: s.notes,
+      }))
+    : RECENT_LOG;
+
   return (
     <div className="screen">
       <div style={{ padding: "20px 16px 12px" }}>
@@ -16,7 +41,7 @@ export default function LogScreen({ onNavigate }: Props) {
       </div>
 
       <div className="section-label" style={{ marginTop: 8 }}>RECENT SESSIONS</div>
-      {RECENT_LOG.map((l, i) => (
+      {displayLog.map((l, i) => (
         <div key={i} className="card-sm" style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, cursor: "pointer" }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 700, marginBottom: 4, letterSpacing: .5 }}>{l.date}</div>

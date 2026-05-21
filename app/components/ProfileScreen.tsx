@@ -1,13 +1,15 @@
 "use client";
-import { USER, ZONES } from "../store";
+import { ZONES } from "../store";
+import { type AthleteData } from "@/lib/useAthlete";
 
 interface Props {
+  athlete: AthleteData;
   proMode: boolean;
   setProMode: (v: boolean) => void;
   onNavigate: (s: string) => void;
 }
 
-export default function ProfileScreen({ proMode, setProMode, onNavigate }: Props) {
+export default function ProfileScreen({ athlete, proMode, setProMode, onNavigate }: Props) {
   return (
     <div className="screen">
       <div style={{ padding: "24px 16px 16px" }}>
@@ -20,8 +22,8 @@ export default function ProfileScreen({ proMode, setProMode, onNavigate }: Props
             fontSize: 24, fontWeight: 800
           }}>A</div>
           <div>
-            <div style={{ fontSize: 22, fontWeight: 800 }}>{USER.name}</div>
-            <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 2 }}>{USER.goal}</div>
+            <div style={{ fontSize: 22, fontWeight: 800 }}>{athlete.name}</div>
+            <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 2 }}>{athlete.goal}</div>
           </div>
         </div>
 
@@ -60,7 +62,7 @@ export default function ProfileScreen({ proMode, setProMode, onNavigate }: Props
       <div className="section-label">YOUR ZONES</div>
       <div className="card" style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-muted)", marginBottom: 12, letterSpacing: 1, textTransform: "uppercase" }}>
-          Running · VDOT {USER.vdot}
+          Running · VDOT {athlete.vdot}
         </div>
         {ZONES.map((z, i) => (
           <div key={i} style={{
@@ -83,7 +85,7 @@ export default function ProfileScreen({ proMode, setProMode, onNavigate }: Props
       <div style={{ display: "flex", gap: 10, padding: "0 16px", marginBottom: 12 }}>
         {[
           { label: "5K PR", value: USER.pr5k },
-          { label: "Streak", value: `${USER.streak}🔥` },
+          { label: "Streak", value: `${athlete.streak}🔥` },
           { label: "Weeks", value: "11/17" },
         ].map((s, i) => (
           <div key={i} style={{ flex: 1, background: "var(--card)", borderRadius: 12, padding: 12 }}>

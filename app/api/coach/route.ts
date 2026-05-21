@@ -3,18 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   const { messages, system } = await request.json();
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  // Kimi API (OpenAI-compatible)
+  const res = await fetch("https://api.moonshot.cn/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": process.env.ANTHROPIC_API_KEY!,
-      "anthropic-version": "2023-06-01",
+      "Authorization": `Bearer ${process.env.KIMI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      model: "moonshot-v1-8k",
       max_tokens: 400,
-      system,
-      messages,
+      messages: [
+        { role: "system", content: system },
+        ...messages,
+      ],
     }),
   });
 
@@ -27,5 +29,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json(data);
+  // Normalize to Anthropic-style response so CoachScreen doesn't need changes
+  return NextResponse.json({
+    content: [{ text: data.choices?.[0]?.message?.content || "No response" }],
+  });
 }

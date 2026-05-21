@@ -1,12 +1,14 @@
 "use client";
-import { USER, WEEK_PLAN } from "../store";
+import { WEEK_PLAN } from "../store";
+import { type AthleteData } from "@/lib/useAthlete";
 
 interface Props {
+  athlete: AthleteData;
   proMode: boolean;
   onNavigate: (s: string) => void;
 }
 
-export default function TodayScreen({ proMode, onNavigate }: Props) {
+export default function TodayScreen({ athlete, proMode, onNavigate }: Props) {
   if (proMode) {
     return (
       <div className="screen">
@@ -17,7 +19,7 @@ export default function TodayScreen({ proMode, onNavigate }: Props) {
               FRI · MAY 15 · WK 11/17
             </div>
             <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.1 }}>
-              Morning,<br />{USER.name}.
+              Morning,<br />{athlete.name}.
             </div>
           </div>
           <button
@@ -39,17 +41,17 @@ export default function TodayScreen({ proMode, onNavigate }: Props) {
           <div style={{ display: "flex" }}>
             <div style={{ flex: 1, paddingRight: 16, borderRight: "1px solid var(--border)" }}>
               <div className="metric-label">Fitness</div>
-              <div style={{ fontSize: 26, fontWeight: 800 }}>{USER.ctl}</div>
+              <div style={{ fontSize: 26, fontWeight: 800 }}>{athlete.ctl}</div>
               <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace" }}>CTL</div>
             </div>
             <div style={{ flex: 1, padding: "0 16px", borderRight: "1px solid var(--border)" }}>
               <div className="metric-label">Fatigue</div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: "var(--red)" }}>{USER.atl}</div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: "var(--red)" }}>{athlete.atl}</div>
               <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace" }}>ATL</div>
             </div>
             <div style={{ flex: 1, paddingLeft: 16 }}>
               <div className="metric-label">Form</div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: "var(--yellow)" }}>{USER.tsb}</div>
+              <div style={{ fontSize: 26, fontWeight: 800, color: "var(--yellow)" }}>{athlete.tsb}</div>
               <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace" }}>TSB · Productive</div>
             </div>
           </div>
