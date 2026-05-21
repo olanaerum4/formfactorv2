@@ -84,7 +84,7 @@ export default function ProfileScreen({ athlete, proMode, setProMode, onNavigate
       <div className="section-label">STATS</div>
       <div style={{ display: "flex", gap: 10, padding: "0 16px", marginBottom: 12 }}>
         {[
-          { label: "5K PR", value: USER.pr5k },
+          { label: "5K PR", value: athlete.pr5k },
           { label: "Streak", value: `${athlete.streak}🔥` },
           { label: "Weeks", value: "11/17" },
         ].map((s, i) => (

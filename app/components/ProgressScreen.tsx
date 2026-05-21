@@ -87,8 +87,8 @@ export default function ProgressScreen({ athlete, onNavigate }: Props) {
           ⭐
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700 }}>New 5K PR · {USER.pr5k}</div>
-          <div style={{ fontSize: 12, color: "#666", marginTop: 2 }}>−47s vs March · VDOT {USER.vdot}</div>
+          <div style={{ fontSize: 16, fontWeight: 700 }}>New 5K PR · {athlete.pr5k}</div>
+          <div style={{ fontSize: 12, color: "#666", marginTop: 2 }}>−47s vs March · VDOT {athlete.vdot}</div>
         </div>
         <div style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace" }}>4 D AGO</div>
       </div>
