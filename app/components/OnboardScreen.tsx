@@ -64,6 +64,32 @@ export default function OnboardScreen({ onComplete }: Props) {
     return 35;
   }
 
+  function pr5kToMins(pr: string): number {
+    const parts = pr.split(":");
+    if (parts.length !== 2 || isNaN(Number(parts[0])) || isNaN(Number(parts[1]))) return 21;
+    return Number(parts[0]) + Number(parts[1]) / 60;
+  }
+
+  function secPerKmToStr(s: number): string {
+    const min = Math.floor(s / 60);
+    const sec = Math.round(s % 60);
+    return `${min}:${String(sec).padStart(2, "0")}/km`;
+  }
+
+  function getVo2Pace(pr: string): string {
+    return secPerKmToStr((pr5kToMins(pr) * 60 / 5) * 0.98);
+  }
+
+  function getThresholdPace(pr: string): string {
+    return secPerKmToStr((pr5kToMins(pr) * 60 / 5) * 1.09);
+  }
+
+  function getEasyPace(pr: string): string {
+    const base = pr5kToMins(pr) * 60 / 5;
+    const low = secPerKmToStr(base * 1.29).replace("/km", "");
+    return `${low}–${secPerKmToStr(base * 1.4)}`;
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {/* Progress bar */}
@@ -135,10 +161,10 @@ export default function OnboardScreen({ onComplete }: Props) {
               <div className="ai-bubble">
                 <div className="ai-dot">AI</div>
                 <div style={{ fontSize: 13, color: "#ccc", lineHeight: 1.6 }}>
-                  {pr5k} → <span style={{ color: "#fff", fontWeight: 700 }}>VDOT 47</span>. Your VO₂max pace is{" "}
-                  <span style={{ color: "var(--yellow)", fontWeight: 700 }}>4:00/km</span>. Threshold:{" "}
-                  <span style={{ color: "var(--yellow)", fontWeight: 700 }}>4:24/km</span>. Easy runs:{" "}
-                  <span style={{ color: "var(--yellow)", fontWeight: 700 }}>5:30–6:00/km</span>.
+                  {pr5k} → <span style={{ color: "#fff", fontWeight: 700 }}>VDOT {estimateVdot(pr5k)}</span>. Your VO₂max pace is{" "}
+                  <span style={{ color: "var(--yellow)", fontWeight: 700 }}>{getVo2Pace(pr5k)}</span>. Threshold:{" "}
+                  <span style={{ color: "var(--yellow)", fontWeight: 700 }}>{getThresholdPace(pr5k)}</span>. Easy runs:{" "}
+                  <span style={{ color: "var(--yellow)", fontWeight: 700 }}>{getEasyPace(pr5k)}</span>.
                 </div>
               </div>
             )}
